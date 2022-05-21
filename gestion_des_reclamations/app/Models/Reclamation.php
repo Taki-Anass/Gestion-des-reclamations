@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use App\Models\User;
+use App\Models\Solution;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class Reclamation extends Model
         'etat',
         'user_id',
         'image',
+        'raison_du_refus',
         'solution'
     ];
     use HasFactory;
@@ -24,4 +26,6 @@ class Reclamation extends Model
     {
         return $this->belongsTo(User::class,"user_id","id");
     }
+    
 }
+

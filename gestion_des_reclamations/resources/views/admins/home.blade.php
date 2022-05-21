@@ -5,16 +5,20 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+                <div class="card-header">Rapport de Statistique</div>
 
                 <div class="card-body">
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
                     @endif
-                    welcome home Admin
-                    {{ __('You are logged in!') }}
+                    
+                    <div class="row">
+                        <div class="col-4"> Nombre total de réclamations pour ce mois: <br><strong> {{ $nombre_total_des_réclamations}}</strong></div>
+                        <div class="col-4"> Nombre des réclamations traitées pour ce mois : <br><strong>{{ $Nombre_des_réclamations_traitées}}</strong></div>
+                        <div class="col-4"> Nombre des réclamations rejetées pour ce mois: <br><strong>{{ $Nombre_des_réclamations_rejetées}}</strong></div>
+                    </div>
                 </div>
             </div>
             <div>

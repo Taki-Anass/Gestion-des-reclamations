@@ -28,6 +28,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::get('liste_reclamations', [AdminController::class, 'getReclamations'])->name('liste_reclamations');
     Route::get('show_reclamation/{reclamation_id}', [AdminController::class, 'show_reclamation'])->name('admin_show_reclamation');
     Route::get('accepte_reclamation/{reclamation_id}', [AdminController::class, 'accepte_reclamation'])->name('accepte_reclamation');
+    Route::get('refuse_reclamation/{reclamation_id}', [AdminController::class, 'refuse_reclamation_form'])->name('refuse_reclamation_form');
+    Route::post('refuse_reclamation/{reclamation_id}', [AdminController::class, 'refuse_reclamation'])->name('refuse_reclamation');
 });
 
 //Authentification

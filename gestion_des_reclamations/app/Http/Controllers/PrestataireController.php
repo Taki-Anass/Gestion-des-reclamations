@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reclamation;
+use App\Models\Solution;
 use Illuminate\Http\Request;
 
 class PrestataireController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('guest:prestataire',['except' => 'logout']);
+    // }
     public function index()
     {
         return view('prestataires.home');
@@ -42,10 +47,11 @@ class PrestataireController extends Controller
 
     public function reclamation_resolue(Request $request, $reclamation_id)
     {
-
         $reclamation = Reclamation::find($reclamation_id);
-        $reclamation->update(['etat' => $request->etat, 'solution' => $request->solution]);
-
+      
+        //save solution & changer l'etat du reclamation
+        $reclamation->update(['etat' => $request->etat,'solution' => $request->solution ]);
+        
         return redirect()->route('prestataire_inbox')->with(['success' => 'réclamation numero ' . $reclamation_id . ' est traitée']);
     }
 }

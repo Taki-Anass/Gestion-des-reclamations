@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReclamationController;
+use App\Models\Reclamation;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,12 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth'], function () {
     Route::get('edit_reclamation/{reclamation_id}', [ReclamationController::class, 'edit'])->name('edit_reclamation');
     Route::post('update_reclamation/{reclamation_id}', [ReclamationController::class, 'update'])->name('update_reclamation');
     Route::get('show_reclamation/{reclamation_id}', [ReclamationController::class, 'show'])->name('show_reclamation');
+    //accepte reclamation
+    Route::get('liste_reclamations_traitee',[ReclamationController::class,'show_reclamations_traitee'])->name('liste_reclamations_traitee');
+    Route::get('accepte_solution_reclamation/{reclamation_id}',[ReclamationController::class,'accepte_solution_reclamation'])->name('accepte_solution_reclamation');
+   
+    Route::get('liste_reclamations_refusee',[ReclamationController::class,'show_reclamations_refusee'])->name('liste_reclamations_refusee');
+
 });
 
 Route::get('/', function () {

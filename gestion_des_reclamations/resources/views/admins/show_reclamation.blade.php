@@ -15,6 +15,7 @@
             @endif
             <a class="btn btn-secondary" href="{{route('liste_reclamations')}}">retourner</a>
             <a class="btn btn-success" href="{{route('accepte_reclamation',$reclamation->id)}}">accepter</a>
+            <a class="btn btn-danger" href="{{route('refuse_reclamation_form',$reclamation->id)}}">refuser</a>
         </div>
     </div>
     @endsection

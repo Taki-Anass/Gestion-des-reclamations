@@ -15,10 +15,13 @@
             <hr>
             @if($reclamation->solution)
             <p><strong>Solution : </strong>{{$reclamation->solution}}</p>
-            <a class="btn btn-success" href="{{route('gestion_reclamation')}}">accepter</a>
-            <a class="btn btn-danger" href="{{route('gestion_reclamation')}}">refuser</a>
+            <a class="btn btn-success" href="{{route('accepte_solution_reclamation',$reclamation->id)}}">accepter</a>
+            @endif
+            @if($reclamation->raison_du_refus)
+            <p><strong>Raison du refus : </strong>{{$reclamation->raison_du_refus}}</p>
             @endif
             <a class="btn btn-secondary" href="{{route('gestion_reclamation')}}">retourner</a>
         </div>
     </div>
+</div>
     @endsection

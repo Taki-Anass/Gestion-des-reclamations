@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoredSolutionRequest;
 use App\Models\reclamation;
 use App\Http\Requests\StorereclamationRequest;
 use App\Http\Requests\UpdatereclamationRequest;
+use App\Models\Solution;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Routing\Route;
 
 class ReclamationController extends Controller
@@ -14,7 +17,7 @@ class ReclamationController extends Controller
      */
     public function index()
     {
-        $reclamations = Reclamation::where('etat', "!=", "fermée")->orWhere('solution', !null)->get();
+        $reclamations = Reclamation::all()->where('etat', "!=", "fermée");
 
         return view('users.gestion_reclamation', compact('reclamations'));
     }
@@ -34,12 +37,14 @@ class ReclamationController extends Controller
     public function store(StorereclamationRequest $request)
     {
         // save image in folder public/images/reclamations
+        $file_name=null;
+        if($request->image){
         $file_extension = $request->image->getClientOriginalExtension();
         $file_name = time() . "." . $file_extension;
         $path = 'images/reclamations';
 
         $request->image->move($path, $file_name);
-
+        }
         Reclamation::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
@@ -59,7 +64,8 @@ class ReclamationController extends Controller
     public function show($reclamation_id)
     {
         $reclamation = Reclamation::find($reclamation_id);
-        return view('users.show_reclamation', compact('reclamation'));
+
+        return view('users.show_reclamation', compact('reclamation')); 
     }
 
     /**
@@ -107,4 +113,29 @@ class ReclamationController extends Controller
         $reclamation->delete();
         return redirect()->route('gestion_reclamation')->with(['delete-success' => 'réclamation supprimée']);
     }
+    
+    public function show_reclamations_traitee()
+    {
+        $reclamations = Reclamation::all()->where('etat', "traitée");
+        return view('users.reclamations_traitee',compact('reclamations'));
+    }
+    public function show_reclamations_refusee()
+    {
+        $reclamations = Reclamation::all()->where('etat', "refusée");
+        return view('users.reclamations_refusee',compact('reclamations'));
+    }
+
+    //***************Solution ****************//
+    public function accepte_solution_reclamation($reclamation_id)
+    {
+        $reclamation= Reclamation::find($reclamation_id);
+        if (!$reclamation) {
+            return redirect()->back()->with(['error' => 'réclamation introuvable']);
+        }
+        
+        $reclamation->update(['etat'=>'fermée']);
+        return redirect()->route('liste_reclamations_traitee')->with(['success' => 'réclamation '.$reclamation_id.' fermée']);
+
+    }
+    
 }
