@@ -23,10 +23,7 @@
                 <select class="form-select" name="etat" required>
                     <option class="form-control" >nouvelle</option>
                     <option class="form-control" >prise en charge</option>
-                    <option class="form-control" >en cours</option>
-                    <option class="form-control" >realisee</option>
-                    <option class="form-control" >refusee</option>
-                    <option class="form-control" >en attente</option>
+                   
                 </select>
 
                 <label for="description" class="text-bold col-form-label text-md-end">Description</label>

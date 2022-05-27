@@ -17,7 +17,7 @@ class ReclamationController extends Controller
      */
     public function index()
     {
-        $reclamations = Reclamation::all()->where('etat', "!=", "fermée");
+        $reclamations = Reclamation::all()->where('etat', "!=", "fermée")->where('etat', "!=", "refusée");
 
         return view('users.gestion_reclamation', compact('reclamations'));
     }
@@ -80,7 +80,7 @@ class ReclamationController extends Controller
             return redirect()->back()->with(['error' => 'reclamation introuvable']);
         }
         //redirect to edit form
-        $reclamation = Reclamation::select('id', 'name', 'type', 'etat', 'description')->find($reclamation_id);
+        $reclamation = Reclamation::select('id', 'name', 'type', 'etat', 'description','image')->find($reclamation_id);
         return view('users.edit_reclamation', compact('reclamation'));
     }
 
@@ -94,7 +94,22 @@ class ReclamationController extends Controller
             return redirect()->back()->with(['error' => 'reclamation introuvable']);
         }
 
-        $reclamation->update($request->all());
+         // save image in folder public/images/reclamations
+         $file_name=null;
+         if($request->image){
+         $file_extension = $request->image->getClientOriginalExtension();
+         $file_name = time() . "." . $file_extension;
+         $path = 'images/reclamations';
+ 
+         $request->image->move($path, $file_name);
+         }
+        $reclamation->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'type' => $request->input('type'),
+            'etat' => $request->input('etat'),
+            'image' => $file_name,
+        ]);
         return redirect()->route('gestion_reclamation')->with(['success' => 'réclamation mise à jour']);
     }
 

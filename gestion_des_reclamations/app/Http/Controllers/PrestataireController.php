@@ -8,14 +8,12 @@ use Illuminate\Http\Request;
 
 class PrestataireController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('guest:prestataire',['except' => 'logout']);
-    // }
+   
     public function index()
     {
         return view('prestataires.home');
     }
+    
     public function inbox()
     {
         $reclamations = Reclamation::where('etat', 'acceptée')

@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\admin;
 use App\Models\Reclamation;
-use App\Http\Requests\StoreadminRequest;
-use App\Http\Requests\StoredSolutionRequest;
-use App\Http\Requests\UpdateadminRequest;
-use App\Models\Solution;
 use Carbon\Carbon;
-use DatePeriod;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Traits\Statistique_Trait;
 
 class AdminController extends Controller
 {
-
+    use Statistique_Trait;
     public function index()
     {
         //Rapport de statistique
@@ -24,12 +19,29 @@ class AdminController extends Controller
         $fin_du_mois = $premier_du_mois->copy()->endOfMonth();
 
         //1-le nombre total des réclamations par période(mois),
-        $nombre_total_des_réclamations = Reclamation::where('created_at', '>=', $premier_du_mois)->where('created_at', '<=', $fin_du_mois)->count();
+        $nombre_total_des_réclamations = $this->get_nombre_total_des_réclamations($premier_du_mois, $fin_du_mois);
         //2-le nombre total des réclamations traitees par période(mois),
-        $Nombre_des_réclamations_traitées =  Reclamation::where('etat', 'traitée')->where('created_at', '>=', $premier_du_mois)->where('created_at', '<=', $fin_du_mois)->count();
+        $Nombre_des_réclamations_traitées = $this->get_nombre_des_réclamations_traitées($premier_du_mois, $fin_du_mois);
         //3-le nombre total des réclamations rejetées par période(mois),
-        $Nombre_des_réclamations_rejetées =  Reclamation::where('etat', 'refusée')->where('created_at', '>=', $premier_du_mois)->where('created_at', '<=', $fin_du_mois)->count();
-        return view('admins.home', compact('nombre_total_des_réclamations', 'Nombre_des_réclamations_traitées','Nombre_des_réclamations_rejetées'));
+        $Nombre_des_réclamations_rejetées = $this->get_nombre_des_réclamations_rejetées($premier_du_mois, $fin_du_mois);
+        //4-le nombre des réclamations en double,
+        $Nombre_des_réclamations_double =  $this->get_nombre_des_réclamations_double();
+
+        /** graphe montrant toutes les réclamations traitées par type de réclamation.**/
+
+        $nombre_remarque_traitee = $this->RemarqueGraphe();
+        $nombre_excalation_traitee = $this->ExcalationGraphe();
+        $nombre_demandeDintervention_traitee = $this->DemandeDinterventionGraphe();
+
+        return view('admins.home', compact(
+            'nombre_total_des_réclamations',
+            'Nombre_des_réclamations_traitées',
+            'Nombre_des_réclamations_rejetées',
+            'Nombre_des_réclamations_double',
+            'nombre_remarque_traitee',
+            'nombre_excalation_traitee',
+            'nombre_demandeDintervention_traitee'
+        ));
     }
 
 
@@ -64,7 +76,8 @@ class AdminController extends Controller
         $reclamation = Reclamation::find($reclamation_id);
         return view('admins.rejeter_reclamation', compact('reclamation'));
     }
-    public function refuse_reclamation($reclamation_id, StoredSolutionRequest $request)
+
+    public function refuse_reclamation($reclamation_id, Request $request)
     {
         $reclamation = Reclamation::find($reclamation_id);
         if (!$reclamation) {

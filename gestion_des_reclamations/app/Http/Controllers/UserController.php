@@ -16,7 +16,6 @@ class UserController extends Controller
         $this->middleware('auth',['except' => 'logout']);
     }
 
-    
     public function index(){
 
         return view('users.home');
